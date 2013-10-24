@@ -1,0 +1,836 @@
+﻿<!doctype html>
+<!-- saved from url=(0016)http://localhost -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>eBridge Connections Web Services</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=true"></script>
+    
+    <style>
+ li.L0,
+  li.L1,
+  li.L2,
+  li.L3,
+  li.L4,
+  li.L5,
+  li.L6,
+  li.L7,
+  li.L8,
+  li.L9 { list-style-type: none }
+  
+  .nav-header a { color:#A9A9A9; }
+  .red .pln, .red { color:red; font-weight:bold  }
+  .gold .pln, .gold { color:#A39004; font-weight:bold  }
+  
+  .nav {
+    margin-bottom: 10px !important;
+}
+
+pre.prettyprint {
+ border: 1px solid rgba(0, 0, 0, 0);
+    border-radius: 4px 4px 4px 4px;
+    padding:3px 10px;
+    margin-bottom:0 !important;
+  }
+  
+  @media print {
+  .sidebar {
+  display:none;
+  }
+  
+}
+  
+table tr td:first-child {
+width:25%;
+
+}
+  
+table tr td:first-child + td {
+width:25%;
+
+}
+ 
+table tr td:first-child + td + td {
+width:50%;
+
+}
+ 
+    </style>
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+  </head>
+  <body data-spy="scroll" data-target=".sidebar">
+<div class="container">
+<div class="row">
+      <div class="span3 sidebar" style="margin-top:20px;">
+      
+	  
+          <ul class="nav nav-list affix">
+    <li class="nav-header"><a href="#overview">Overview</a></li>
+    <li><a href="#getstarted">Get Started</a></li>
+    <li class="nav-header"><a href="#sending">Sending Documents to ePortal</a></li>
+    <li><a href="#sendingorders">Orders</a></li>
+    <li><a href="#sendingproductdata">Product Data</a></li>
+    <li><a href="#sendinginventorydata">Inventory Data</a></li>
+    <li class="nav-header"><a href="#receiving">Receiving Documents from ePortal</a></li>
+    <li class="nav-header"><a href="#othermethods">Other Methods</a></li>
+    <li><a href="#getdocumenttype">Get Document Type List</a></li>
+    <li class="nav-header"><a href="#moreresources">More Resources</a></li>
+    </ul>
+    
+      </div>
+      <div style="margin-left:300px">
+        <section id="overview">
+          <div class="page-header">
+            <h1>Web Services</h1>
+          </div>
+      
+            <h2>Overview</h2>
+<p>Authorized developers can use the eBridge Connections <acronym title="Simple Object Access Protocol">SOAP</acronym> <acronym title="Application Programming Interface">API</acronym> to send or receive documents from businesses on the eBridge ePortal. This documentation page has instructions and code samples for many common use cases. <a href="#moreresources">Additional resources are available here</a> including <acronym title="XML Schema Definition">XSD</acronym> files and a <acronym title="Web Services Definition Language">WSDL</acronym> document.</p>
+
+        </section>
+        <section id="getstarted">
+        <h3>Get Started</h3>
+        
+        <p>In order to get started you will need the username and password for an eBridge ePortal account that has API access enabled. You can request API access or request an ePortal account by <a href="http://www.ebridgeconnections.com/contact-us.html">contacting eBridge</a>.
+        </p>
+        <p>Below is an example script that you can use to test your ePortal credentials with the eBridge web services. Replace <tt>JaneDoe</tt> with your ePortal username (or login) and <tt>abc123</tt> with your ePortal password.</p>
+        
+    <div class="tabbable">
+    <ul class="nav nav-tabs">
+    <li class="active"><a href="#tab1" data-toggle="tab">PHP</a></li>
+    </ul>
+    <div class="tab-content">
+    <div class="tab-pane active" id="tab1">
+
+<pre class="prettyprint"><!-- language: lang-php -->&lt;?php
+$client = new SoapClient("https://www.ebridgeservices.com/ePortalService.asmx?wsdl",array('trace' => true));
+$params = array(
+	'username'=>'JaneDoe',
+	'password'=>'abc123'
+	);
+try {
+	$client->GetDocTypeList($params);
+	$response = $client->__getLastResponse();
+	}
+catch (Exception $e) {
+	$response = 'Error: '.$e->getMessage();
+	}
+echo $response;
+</pre>
+    </div>    
+    </div>
+    </div>
+<p style="padding-top:10px">
+The <tt>$response</tt> variable should contain a list of the document types supported by eBridge. If you do not see the document types then it is possible that your eBridge account does not have API access enabled. <a href="http://www.ebridgeconnections.com/support/log-a-case.html">Contact eBridge Connections support</a> for assistance with enabling API access on your account.</p>
+
+        </section>
+        <section id="sending">
+          <div class="page-header">
+            <h2>Sending Documents to ePortal</h2>
+          </div>
+
+<p>The <tt><a href="https://www.ebridgeservices.com/ePortalService.asmx?op=SendFile">SendFile()</a></tt> method is used for transmitting data to ePortal. This method is commonly used to send orders to an ERP through ePortal (for example, from a custom web store) however it can also be used to transmit product data, inventory reports, shipping information, customer information and other business documents.</p>
+<p>When a valid document is successfully transmitted using <tt>SendFile()</tt> it will appear in the outbox of the sending account. You can view your ePortal mailboxes by <a href="https://www.ebridgeconnections.com/portal/login.aspx">logging into the eBridge Connections ePortal</a>.</p>
+
+<h4>SendFile</h4>
+<p><tt>SendFile()</tt> has four string parameters; all are required:</p>
+
+
+
+<table class="table table-bordered">
+<tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+<tr><td><tt>login</tt></td><td>string</td><td>ePortal username of sender</td></tr>
+<tr><td><tt>password</tt></td><td>string</td><td>ePortal password of sender</td></tr>
+<tr><td><tt>content</tt></td><td>string</td><td>XML document being sent</td></tr>
+<tr><td><tt>filename</tt></td><td>string</td><td>A unique filename</td></tr>
+</table>
+
+
+<h4>Things you should know</h4>
+<ul>
+<li>ePortal accounts cannot send documents to themselves. In order to drop documents in your own account please <a href="http://www.ebridgeconnections.com/support/log-a-case.html">request a dummy sender account from eBridge support.</a></li>
+<li>You can only send a document to a recipient account after eBridge has registered you to trade documents with them and only then for the document types that you are registered to trade.</li>
+<li>All documents must have sender and recipient IDs in the XML file. You can find more information about these IDs in the sub-sections for <a href="#sendingorders">orders</a>, <a href="#sendingproductdata">product data</a> and <a href="sendinginventorydata">inventory data</a>.</li>
+
+</ul>
+
+<h4>Writing eBridge XML documents</h4>
+
+<p>eBridge XML is based on <a href="http://www.xcbl.org/xcbl40/xcbl40.shtml">xCBL 4.0 (the XML Common Business Library.)</a>
+The elements in the XML files you send to eBridge will be determined by the document type you wish to send and the applications that you are integrating. You can find schemas and sample XML files for each document type in the sections for <a href="#sendingorders">orders</a>, <a href="#sendingproductdata">product data</a> and <a href="sendinginventorydata">inventory data</a>.</p>
+
+<p>Some elements are optional or only apply to a specific application. You can use the <a href="www.ebridgeconnections.com/blueprint/">eBridge blueprint builder</a> to look up the XPath associated with a specific field. Here's how:</p>
+<ol>
+<li>Choose an accounting package using the picklists on the left or choose an eCommerce or CRM system using the buttons and picklists on the right</li>
+<li>Click on the arrow for the touchpoint you are interested in</li>
+<li>Click on the <em>View Data Elements</em> link (located below the arrows)</li>
+</ol>
+<p>A pop-up will appear, showing you each field in the touchpoint you chose and  the corresponding eBridge XML XPaths.</p>
+
+
+<h4>Errors</h4>
+
+<p>The response from <tt>SendFile()</tt> will be <tt>true</tt> or <tt>false</tt>. A response of <tt>true</tt> means that the document was received by the eBridge Connections ePortal. It does not necessarily mean that the document was delivered to the recipient. You can verify whether or not the document was delivered by <a href="https://www.ebridgeconnections.com/portal/login.aspx">logging into the eBridge Connections ePortal</a> and checking your Outbox to see if the document is there.</p>
+
+<p>If there was an error in processing or delivering your document you may see the document in your Non-compliant Outbox along with a short error message that explains what went wrong.</p>
+
+<h4>Sample code</h4>
+
+<p>Below are some sample scripts that use <tt>SendFile()</tt>:</p>
+
+    <div class="tabbable">
+    <ul class="nav nav-tabs">
+    <li class="active"><a href="#tab3" data-toggle="tab">PHP</a></li>
+    <li><a href="#tab4" data-toggle="tab">C#</a></li>
+    </ul>
+    <div class="tab-content">
+    <div class="tab-pane active" id="tab3">
+<pre class="prettyprint">
+&lt;?php
+$client = new SoapClient("https://www.ebridgeservices.com/ePortalService.asmx?wsdl");
+$xml = file_get_contents("example.xml");
+$params = array(
+	'login'=>'JaneDoe',
+	'password'=>'abc123',
+	'content' => $xml,
+	'filename' => '123.xml'
+	);
+try {
+    $response = $client->SendFile($params);
+    }
+catch (Exception $e) {
+    $response = 'Error: '.$e->getMessage();
+    }
+var_dump($response);</pre></div><div class="tab-pane" id="tab4"><pre class="prettyprint"><!-- language: lang-csh -->//Web Reference (ePortalServiceReference) needs to be added to your project with url (https://www.ebridgeservices.com/ePortalService.asmx?wsdl)
+string username = "JaneDoe";
+string password = "abc123";
+string content = "";
+string filename = "123.xml";
+using (System.IO.StreamReader streamReader = new System.IO.StreamReader("example.xml"))
+{
+	content = streamReader.ReadToEnd();
+}
+ePortalServiceReference.ePortalService eportalService = new ePortalServiceReference.ePortalService();
+try
+{
+	bool result = eportalService.SendFile(username, password, content, filename);
+	if (result)
+	{
+		System.Diagnostics.Trace.WriteLine("File has been sent successfully.");
+	}
+}
+catch (Exception ex)
+{
+	System.Diagnostics.Trace.WriteLine(ex.Message);
+}</pre></div></div></div></section><section id="sendingorders"><h3>Orders</h3>
+<p>Orders can be sent to ePortal using <tt>SendFile()</tt>. The <tt>content</tt> parameter of <tt>SendFile()</tt> should be an XML document structured according to the <a href="Schemas/xcbl40/ordermanagement/v1_0/ordermanagement.xsd">Order Management XSD</a> of the <a href="http://www.xcbl.org/xcbl40/xcbl40.shtml">xCBL 4.0 standard</a> with <tt>&lt;Order></tt> as the root node.</p>
+
+<p>The fields required for a sales order can vary depending on the application that the order will be integrated with. You can see the sales order fields for your application/ERP and identify their corresponding XML elements using <a href="http://www.ebridgeconnections.com/blueprint/?xpaths=1">eBridge's XPath blueprint builder</a>. Choose your application from the picklists on the left or right side of the diagram and click on the arrow next to Orders. Scroll down to see the field lists and their associated xCBL XPaths.
+</p>
+
+<h4>BuyerParty IDs and SellerParty IDs</h4>
+
+<p>Orders must contain BuyerParty IDs and SellerParty IDs. The BuyerParty is the sender of the order on ePortal. This could be a buyer or in some cases it could represent a third party webstore. The SellerParty represents the recipient of the order (normally the seller, however it could also stand for a warehouse or other intermediate endpoint).
+
+You can retrieve these ISA IDs by logging into ePortal with the sender account and navigating to <a href="https://www.ebridgeconnections.com/portal/configuration/connection/">Connection Settings</a>. In the sidebar at left, click on the partner that you wish to send orders to. On this page, you will find a table labelled Envelopes:<br /><img src="isaids.png"></p> 
+
+<p>The User ISA ID is the BuyerParty ID. The Partner ISA ID is the SellerParty ID. You can find a sample Order XML document below. In this sample file, the BuyerParty ID (<span class="red"><tt>ACME123</tt></span> in this example) is labelled in <span class="red">red</span> and the SellerParty ID (<span class="gold"><tt>XYZCORP</tt></span>) is labelled in <span class="gold">gold</span>.</p>
+
+<h4>Sample XML</h4>
+
+<pre class="prettyprint">
+&lt;?xml version="1.0"?>
+&lt;Order xmlns="rrn:org.xcbl:schemas/xcbl/v4_0/ordermanagement/v1_0/ordermanagement.xsd" xmlns:core="rrn:org.xcbl:schemas/xcbl/v4_0/core/core.xsd" xmlns:dgs="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  &lt;OrderHeader>
+    &lt;OrderNumber>
+      &lt;BuyerOrderNumber>123&lt;/BuyerOrderNumber>
+    &lt;/OrderNumber>
+    &lt;OrderIssueDate>2013-05-11T08:51:16&lt;/OrderIssueDate>
+    &lt;OrderReferences/>
+    &lt;Purpose>
+      &lt;core:PurposeCoded>Other&lt;/core:PurposeCoded>
+    &lt;/Purpose>
+    &lt;RequestedResponse>
+      &lt;core:RequestedResponseCoded>Other&lt;/core:RequestedResponseCoded>
+    &lt;/RequestedResponse>
+    &lt;OrderType>
+      &lt;core:OrderTypeCoded>Other&lt;/core:OrderTypeCoded>
+      &lt;core:OrderTypeCodedOther>InboundOrder&lt;/core:OrderTypeCodedOther>
+    &lt;/OrderType>
+    &lt;OrderCurrency>
+      &lt;core:CurrencyCoded>USD&lt;/core:CurrencyCoded>
+    &lt;/OrderCurrency>
+    &lt;OrderLanguage>
+      &lt;core:LanguageCoded>en&lt;/core:LanguageCoded>
+    &lt;/OrderLanguage>
+    &lt;OrderDates/>
+    &lt;OrderParty>
+      &lt;BuyerParty xsi:type="core:PartyType">
+        &lt;core:PartyID>
+          &lt;core:Ident><span class="red">ACME123&lt;</span>/core:Ident>
+        &lt;/core:PartyID>
+        &lt;core:ListOfIdentifier>
+          &lt;core:Identifier>
+            &lt;core:Ident>1&lt;/core:Ident>
+          &lt;/core:Identifier>
+        &lt;/core:ListOfIdentifier>
+      &lt;/BuyerParty>
+      &lt;SellerParty xsi:type="core:PartyType">
+        &lt;core:PartyID>
+          &lt;core:Ident><span class="gold">XYZCORP&lt;</span>/core:Ident>
+        &lt;/core:PartyID>
+        &lt;core:ListOfIdentifier>
+          &lt;core:Identifier>
+            &lt;core:Ident><span class="gold">XYZCORP&lt;</span>/core:Ident>
+          &lt;/core:Identifier>
+        &lt;/core:ListOfIdentifier>
+      &lt;/SellerParty>
+      &lt;ShipToParty xsi:type="core:PartyType">
+        &lt;core:PartyID>
+          &lt;core:Ident/>
+        &lt;/core:PartyID>
+        &lt;core:ListOfIdentifier>
+          &lt;core:Identifier>
+            &lt;core:Ident/>
+          &lt;/core:Identifier>
+        &lt;/core:ListOfIdentifier>
+        &lt;core:NameAddress>
+          &lt;core:Name1>John Doe&lt;/core:Name1>
+          &lt;core:Street>123 Sesame Street&lt;/core:Street>
+          &lt;core:PostalCode>02101&lt;/core:PostalCode>
+          &lt;core:City>New York&lt;/core:City>
+          &lt;core:Region>
+            &lt;core:RegionCoded>Other&lt;/core:RegionCoded>
+            &lt;core:RegionCodedOther>NY&lt;/core:RegionCodedOther>
+          &lt;/core:Region>
+          &lt;core:Country>
+            &lt;core:CountryCoded>US&lt;/core:CountryCoded>
+          &lt;/core:Country>
+        &lt;/core:NameAddress>
+      &lt;/ShipToParty>
+      &lt;BillToParty xsi:type="core:PartyType">
+        &lt;core:PartyID>
+          &lt;core:Ident/>
+        &lt;/core:PartyID>
+        &lt;core:ListOfIdentifier>
+          &lt;core:Identifier>
+            &lt;core:Ident/>
+          &lt;/core:Identifier>
+        &lt;/core:ListOfIdentifier>
+        &lt;core:NameAddress>
+          &lt;core:Name1>John Doe&lt;/core:Name1>
+          &lt;core:Street>123 Sesame Street&lt;/core:Street>
+          &lt;core:PostalCode>02101&lt;/core:PostalCode>
+          &lt;core:City>NEW YORK&lt;/core:City>
+          &lt;core:Region>
+            &lt;core:RegionCoded>Other&lt;/core:RegionCoded>
+            &lt;core:RegionCodedOther>NY&lt;/core:RegionCodedOther>
+          &lt;/core:Region>
+          &lt;core:Country>
+            &lt;core:CountryCoded>US&lt;/core:CountryCoded>
+          &lt;/core:Country>
+        &lt;/core:NameAddress>
+      &lt;/BillToParty>
+    &lt;/OrderParty>
+    &lt;OrderPaymentInstructions>
+      &lt;core:PaymentTerms>
+        &lt;core:PaymentTerm>
+          &lt;core:PaymentTermCoded>Other&lt;/core:PaymentTermCoded>
+          &lt;core:PaymentTermCodedOther>Dummy text since this is required&lt;/core:PaymentTermCodedOther>
+        &lt;/core:PaymentTerm>
+      &lt;/core:PaymentTerms>
+      &lt;core:PaymentMethod>
+        &lt;core:PaymentMeanCoded>Other&lt;/core:PaymentMeanCoded>
+        &lt;core:PaymentMeanCodedOther>Credit Card&lt;/core:PaymentMeanCodedOther>
+      &lt;/core:PaymentMethod>
+    &lt;/OrderPaymentInstructions>
+  &lt;/OrderHeader>
+  &lt;OrderDetail>
+    &lt;ListOfItemDetail>
+      &lt;ItemDetail>
+        &lt;BaseItemDetail>
+          &lt;LineItemNum>
+            &lt;core:BuyerLineItemNum>1&lt;/core:BuyerLineItemNum>
+          &lt;/LineItemNum>
+          &lt;ItemIdentifiers>
+            &lt;core:PartNumbers>
+              &lt;core:SellerPartNumber>
+                &lt;core:PartID>SKU123&lt;/core:PartID>
+              &lt;/core:SellerPartNumber>
+            &lt;/core:PartNumbers>
+          &lt;/ItemIdentifiers>
+          &lt;TotalQuantity xsi:type="core:QuantityType">
+            &lt;core:QuantityValue>1&lt;/core:QuantityValue>
+            &lt;core:UnitOfMeasurement>
+              &lt;core:UOMCoded>Other&lt;/core:UOMCoded>
+              &lt;core:UOMCodedOther>EA&lt;/core:UOMCodedOther>
+            &lt;/core:UnitOfMeasurement>
+          &lt;/TotalQuantity>
+        &lt;/BaseItemDetail>
+        &lt;PricingDetail>
+          &lt;core:ListOfPrice>
+            &lt;core:Price>
+              &lt;core:UnitPrice>
+                &lt;core:UnitPriceValue>1.99&lt;/core:UnitPriceValue>
+              &lt;/core:UnitPrice>
+            &lt;/core:Price>
+          &lt;/core:ListOfPrice>
+        &lt;/PricingDetail>
+      &lt;/ItemDetail>
+      &lt;ItemDetail>
+        &lt;BaseItemDetail>
+          &lt;LineItemNum>
+            &lt;core:BuyerLineItemNum>2&lt;/core:BuyerLineItemNum>
+          &lt;/LineItemNum>
+          &lt;ItemIdentifiers>
+            &lt;core:PartNumbers>
+              &lt;core:SellerPartNumber>
+                &lt;core:PartID>SKU124&lt;/core:PartID>
+              &lt;/core:SellerPartNumber>
+            &lt;/core:PartNumbers>
+          &lt;/ItemIdentifiers>
+          &lt;TotalQuantity xsi:type="core:QuantityType">
+            &lt;core:QuantityValue>1&lt;/core:QuantityValue>
+            &lt;core:UnitOfMeasurement>
+              &lt;core:UOMCoded>Other&lt;/core:UOMCoded>
+              &lt;core:UOMCodedOther>EA&lt;/core:UOMCodedOther>
+            &lt;/core:UnitOfMeasurement>
+          &lt;/TotalQuantity>
+        &lt;/BaseItemDetail>
+        &lt;PricingDetail>
+          &lt;core:ListOfPrice>
+            &lt;core:Price>
+              &lt;core:UnitPrice>
+                &lt;core:UnitPriceValue>27.50&lt;/core:UnitPriceValue>
+              &lt;/core:UnitPrice>
+            &lt;/core:Price>
+          &lt;/core:ListOfPrice>
+        &lt;/PricingDetail>
+      &lt;/ItemDetail>
+    &lt;/ListOfItemDetail>
+  &lt;/OrderDetail>
+&lt;/Order>
+</pre>
+        </section>
+    
+        <section id="sendingproductdata">
+<h3>Product Data</h3>
+<p>Product Data (also known as <tt>PRODAT</tt>) is another form of data that can be exchanged using <tt>SendFile()</tt>. When sending <tt>PRODAT</tt> to the eBridge Connections ePortal, the <tt>content</tt> parameter of <tt>SendFile()</tt> must be an XML document that complies with <a href="Schemas/eBRIDGE/inventorymanagement2.xsd">the <tt>InventoryManagement2</tt> XSD</a>. This schema is an eBridge variation of the xCBL standard.</p>
+
+<H4>SenderParty IDs and ReceivingParty IDs</h4>
+<p>As with orders, the document must contain identifiers for the sender and recipient of the document. Refer to <a href="#sendingorders">the Orders documentation</a> for information on where to find these identifiers in ePortal. In <tt>PRODAT</tt> documents, the buyer and seller identifiers are replaced with <tt>&lt;SenderParty></tt> and <tt>&lt;ReceivingParty></tt> respectively.</p>
+
+<h4>Sample XML</h4>
+
+<p>A sample <tt>PRODAT</tt> document can be seen below:</p>
+
+<pre class="prettyprint">
+&lt;InventoryManagement2 xmlns="rrn:org.xcbl:schemas/xcbl/v4_0/catalog/v1_0/catalog.xsd" xmlns:core="rrn:org.xcbl:schemas/xcbl/v4_0/core/core.xsd" xmlns:dgs="http://www.w3.org/2000/09/xmldsig#" xmlns:inv="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="rrn:org.xcbl:schemas/scbl/v4_0/catalog/v1_0/catalog.xsd C:/Schemas/eBRIDGE/Inventorymanagement2.xsd">
+  &lt;CatalogHeader>
+    &lt;CatalogID>PROD56345234&lt;/CatalogID>
+    &lt;CatalogDate xmlns:prod="rrn:org.xcbl:schemas/scbl/v4_0/catalog/v1_0/catalog.xsd">2013-05-08T10:30:00&lt;/CatalogDate>
+    &lt;CatalogProvider xmlns:prod="rrn:org.xcbl:schemas/scbl/v4_0/catalog/v1_0/catalog.xsd"/>
+    &lt;CatalogVersion xmlns:prod="rrn:org.xcbl:schemas/scbl/v4_0/catalog/v1_0/catalog.xsd">1&lt;/CatalogVersion>
+  &lt;/CatalogHeader>
+  &lt;ListOfNameValueSet>
+    &lt;core:NameValueSet>
+      &lt;core:SetName>HeaderReferences&lt;/core:SetName>
+      &lt;core:ListOfNameValuePair>
+        &lt;core:NameValuePair>
+          &lt;core:Name>DocType&lt;/core:Name>
+          &lt;core:Value>PRODAT&lt;/core:Value>
+        &lt;/core:NameValuePair>
+      &lt;/core:ListOfNameValuePair>
+    &lt;/core:NameValueSet>
+  &lt;/ListOfNameValueSet>
+  &lt;SenderParty>
+    &lt;core:PartyID>
+      &lt;core:Ident>XYZCORP&lt;/core:Ident>
+    &lt;/core:PartyID>
+    &lt;core:ListOfIdentifier>
+      &lt;core:Identifier>
+        &lt;core:Ident>XYZCORP&lt;/core:Ident>
+      &lt;/core:Identifier>
+    &lt;/core:ListOfIdentifier>
+    &lt;core:MDFBusiness>true&lt;/core:MDFBusiness>
+  &lt;/SenderParty>
+  &lt;ReceivingParty>
+    &lt;core:PartyID>
+      &lt;core:Ident>ACME123&lt;/core:Ident>
+    &lt;/core:PartyID>
+    &lt;core:ListOfIdentifier>
+      &lt;core:Identifier>
+        &lt;core:Ident>ACME123&lt;/core:Ident>
+      &lt;/core:Identifier>
+    &lt;/core:ListOfIdentifier>
+    &lt;core:MDFBusiness>true&lt;/core:MDFBusiness>
+  &lt;/ReceivingParty>
+  &lt;CatalogData>
+    &lt;Product>
+      &lt;ProductID>SKU123&lt;/ProductID>
+      &lt;ProductName>Case of 24 - Maple Syrup&lt;/ProductName>
+      &lt;UOM>
+        &lt;core:UOMCoded>Other&lt;/core:UOMCoded>
+        &lt;core:UOMCodedOther>Case&lt;/core:UOMCodedOther>
+      &lt;/UOM>
+      &lt;ShortDescription>physical&lt;/ShortDescription>
+      &lt;LongDescription>24 bottles of maple syrup 9&lt;/LongDescription>
+    &lt;/Product>
+    &lt;Pricing>
+      &lt;ProductPrice>
+        &lt;Amount>150.000000&lt;/Amount>
+        &lt;PriceType>price&lt;/PriceType>
+      &lt;/ProductPrice>
+      &lt;ProductPrice>
+        &lt;Amount>60.000000&lt;/Amount>
+        &lt;PriceType>cost_price&lt;/PriceType>
+      &lt;/ProductPrice>
+      &lt;ProductPrice>
+        &lt;Amount>150.000000&lt;/Amount>
+        &lt;PriceType>retail_price&lt;/PriceType>
+      &lt;/ProductPrice>
+    &lt;/Pricing>
+    &lt;InventoryReportDetail>
+      &lt;inv:LineItemNumber xmlns:inv="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd"/>
+      &lt;inv:InventoryItemIdentifiers>
+        &lt;core:PartNumbers>
+          &lt;core:SellerPartNumber>
+            &lt;core:PartID>SKU123&lt;/core:PartID>
+          &lt;/core:SellerPartNumber>
+          &lt;core:OtherItemIdentifiers>
+            &lt;core:ProductIdentifierCoded>
+              &lt;core:ProductIdentifierQualifierCoded>SKU&lt;/core:ProductIdentifierQualifierCoded>
+              &lt;core:ProductIdentifier>SKU123&lt;/core:ProductIdentifier>
+            &lt;/core:ProductIdentifierCoded>
+          &lt;/core:OtherItemIdentifiers>
+        &lt;/core:PartNumbers>
+      &lt;/inv:InventoryItemIdentifiers>
+      &lt;inv:TotalInventoryQuantity>
+        &lt;core:QuantityValue>0&lt;/core:QuantityValue>
+        &lt;core:UnitOfMeasurement>
+          &lt;core:UOMCoded>Other&lt;/core:UOMCoded>
+          &lt;core:UOMCodedOther>Case&lt;/core:UOMCodedOther>
+        &lt;/core:UnitOfMeasurement>
+      &lt;/inv:TotalInventoryQuantity>
+      &lt;inv:ListOfNameValueSet>
+        &lt;core:NameValueSet>
+          &lt;core:SetName>Warehouse&lt;/core:SetName>
+          &lt;core:ListOfNameValuePair>
+            &lt;core:NameValuePair>
+              &lt;core:Name>Is In Stock&lt;/core:Name>
+              &lt;core:Value>False&lt;/core:Value>
+            &lt;/core:NameValuePair>
+          &lt;/core:ListOfNameValuePair>
+        &lt;/core:NameValueSet>
+      &lt;/inv:ListOfNameValueSet>
+    &lt;/InventoryReportDetail>
+  &lt;/CatalogData>
+&lt;/InventoryManagement2>
+</pre>
+
+        </section>
+        
+<section id="sendinginventorydata">
+<h3>Inventory Data</h3>
+<p>Inventory data, also known as <tt>INVRPT</tt>, uses the same schema definition as product data: <a href="Schemas/eBRIDGE/inventorymanagement2.xsd">the <tt>InventoryManagement2</tt> XSD</a>. Inventory documents also require <tt>&lt;SenderParty&gt;</tt> and <tt>&lt;ReceivingParty&gt;</tt> elements as described in the product data section.</p>
+
+<h4>Sample XML</h4>
+
+<pre class="prettyprint">
+&lt;?xml version="1.0" encoding="UTF-16"?>
+&lt;InventoryManagement2 xmlns="rrn:org.xcbl:schemas/xcbl/v4_0/catalog/v1_0/catalog.xsd" xmlns:core="rrn:org.xcbl:schemas/xcbl/v4_0/core/core.xsd" xmlns:dgs="http://www.w3.org/2000/09/xmldsig#" xmlns:inv="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="rrn:org.xcbl:schemas/scbl/v4_0/catalog/v1_0/catalog.xsd C:/Schemas/eBRIDGE/Inventorymanagement2.xsd">
+  &lt;CatalogHeader>
+    &lt;CatalogID>INVT3413&lt;/CatalogID>
+    &lt;CatalogDate xmlns:prod="rrn:org.xcbl:schemas/scbl/v4_0/catalog/v1_0/catalog.xsd">2013-04-05T10:39:00&lt;/CatalogDate>
+    &lt;CatalogProvider xmlns:prod="rrn:org.xcbl:schemas/scbl/v4_0/catalog/v1_0/catalog.xsd" />
+    &lt;CatalogVersion xmlns:prod="rrn:org.xcbl:schemas/scbl/v4_0/catalog/v1_0/catalog.xsd">1&lt;/CatalogVersion>
+  &lt;/CatalogHeader>
+  &lt;SenderParty>
+    &lt;core:PartyID>
+      &lt;core:Ident>XYZCORP&lt;/core:Ident>
+    &lt;/core:PartyID>
+    &lt;core:ListOfIdentifier>
+      &lt;core:Identifier>
+        &lt;core:Ident>XYZCORP&lt;/core:Ident>
+      &lt;/core:Identifier>
+    &lt;/core:ListOfIdentifier>
+    &lt;core:MDFBusiness>true&lt;/core:MDFBusiness>
+  &lt;/SenderParty>
+  &lt;ReceivingParty>
+    &lt;core:PartyID>
+      &lt;core:Ident>ACME123&lt;/core:Ident>
+    &lt;/core:PartyID>
+    &lt;core:ListOfIdentifier>
+      &lt;core:Identifier>
+        &lt;core:Ident>ACME123&lt;/core:Ident>
+      &lt;/core:Identifier>
+    &lt;/core:ListOfIdentifier>
+    &lt;core:MDFBusiness>true&lt;/core:MDFBusiness>
+  &lt;/ReceivingParty>
+  &lt;CatalogData>
+    &lt;Product>
+      &lt;ProductID>SKU123&lt;/ProductID>
+      &lt;ProductName>Case of 24 - Maple Syrup&lt;/ProductName>
+      &lt;UOM>
+        &lt;core:UOMCoded>Other&lt;/core:UOMCoded>
+        &lt;core:UOMCodedOther>PAIR&lt;/core:UOMCodedOther>
+      &lt;/UOM>
+      &lt;ShortDescription />
+      &lt;LongDescription />
+    &lt;/Product>
+    &lt;InventoryReportDetail>
+      &lt;inv:LineItemNumber xmlns:inv="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd">1&lt;/inv:LineItemNumber>
+      &lt;inv:InventoryItemIdentifiers>
+        &lt;core:PartNumbers>
+          &lt;core:SellerPartNumber>
+            &lt;core:PartID>SKU123&lt;/core:PartID>
+          &lt;/core:SellerPartNumber>
+          &lt;core:OtherItemIdentifiers>
+            &lt;core:ProductIdentifierCoded>
+              &lt;core:ProductIdentifierQualifierCoded>SKU&lt;/core:ProductIdentifierQualifierCoded>
+              &lt;core:ProductIdentifier>SKU123&lt;/core:ProductIdentifier>
+            &lt;/core:ProductIdentifierCoded>
+          &lt;/core:OtherItemIdentifiers>
+        &lt;/core:PartNumbers>
+      &lt;/inv:InventoryItemIdentifiers>
+      &lt;inv:TotalInventoryQuantity>
+        &lt;core:QuantityValue>0&lt;/core:QuantityValue>
+        &lt;core:UnitOfMeasurement>
+          &lt;core:UOMCoded>Other&lt;/core:UOMCoded>
+          &lt;core:UOMCodedOther>PAIR&lt;/core:UOMCodedOther>
+        &lt;/core:UnitOfMeasurement>
+      &lt;/inv:TotalInventoryQuantity>
+      &lt;inv:ListOfNameValueSet>
+        &lt;core:NameValueSet>
+          &lt;core:SetName>Warehouse&lt;/core:SetName>
+          &lt;core:ListOfNameValuePair>
+            &lt;core:NameValuePair>
+              &lt;core:Name>Is In Stock&lt;/core:Name>
+              &lt;core:Value>False&lt;/core:Value>
+            &lt;/core:NameValuePair>
+          &lt;/core:ListOfNameValuePair>
+        &lt;/core:NameValueSet>
+      &lt;/inv:ListOfNameValueSet>
+    &lt;/InventoryReportDetail>
+  &lt;/CatalogData>
+&lt;/InventoryManagement2>
+</pre>
+
+</section>
+
+
+<section id="receiving">
+          <div class="page-header">
+            <h2>Receiving Documents from ePortal</h2>
+          </div>        
+<p>Data can be retrieved from the eBridge Connections ePortal using <tt><a href="https://www.ebridgeservices.com/ePortalService.asmx?op=GetDocumentList">GetDocumentList()</a></tt> or <tt><a href="https://www.ebridgeservices.com/ePortalService.asmx?op=GetDocumentList2">GetDocumentList2()</a></tt> in combination with <tt><a href="https://www.ebridgeservices.com/ePortalService.asmx?op=GetDocument">GetDocument()</a></tt>.</p>
+
+<h4>GetDocumentList</h4>
+
+<p><tt>GetDocumentList()</tt> returns an array of document IDs based on filter criteria in its parameters:</p>
+        
+<table class="table table-bordered">
+<tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+<tr><td><tt>login</tt></td><td>string</td><td>ePortal username of sender</td></tr>
+<tr><td><tt>password</tt></td><td>string</td><td>ePortal password of sender</td></tr>
+<tr><td><tt>status</tt></td><td>string</td><td>Either <tt>All</tt> or <tt>New</tt></td></tr>
+<tr><td><tt>docType</tt></td><td>string</td><td>A document type such as <tt>ORDERS</tt>, <tt>INVRPT</tt> or <tt>PRODAT</tt> (optional)</td></tr>
+<tr><td><tt>partner</tt></td><td>string</td><td>The name of the partner or endpoint (optional)</td></tr>
+<tr><td><tt>fromDate</tt></td><td>datetime</td><td>Start of date range</td></tr>
+<tr><td><tt>toDate</tt></td><td>datetime</td><td>End of date range</td></tr>
+</table>
+
+<p><tt>GetDocumentList2()</tt> works the same way as <tt>GetDocumentList()</tt> however the <tt>fromDate</tt> and <tt>toDate</tt> fields must be sent as a string type instead of datetime. When using <tt>fromDate</tt> and <tt>toDate</tt> parameters with <tt>GetDocumentList2</tt>, the dates should be formatted <tt>YYYY-MM-DD</tt>.</p>
+
+<p>Documents have the status <tt>New</tt> until they are retrieved using <tt>GetDocument()</tt> or an eBridge application adapter.</p>
+
+<h4>GetDocument</h4>
+<p>Once you have the list of document IDs that you wish to retrieve, you can use the <tt>GetDocument()</tt> method to fetch them. The parameters of <tt>GetDocument()</tt> are listed below:</p>
+            
+<table class="table table-bordered">
+<tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+<tr><td><tt>login</tt></td><td>string</td><td>ePortal username</td></tr>
+<tr><td><tt>password</tt></td><td>string</td><td>ePortal password</td></tr>
+<tr><td><tt>sys_no</tt></td><td>integer</td><td>Document ID as returned from <tt>GetDocumentList()</tt> or <tt>GetDocumentList2()</tt></td></tr>
+</table>
+            
+            
+<h4>Sample code</h4>
+<p>Here is an example script that uses <tt>GetDocumentList()</tt> and <tt>GetDocument()</tt> to retrieve orders from an ePortal account:</p>
+
+    <div class="tabbable">
+    <ul class="nav nav-tabs">
+    <li class="active"><a href="#tab5" data-toggle="tab">PHP</a></li>
+    <li><a href="#tab6" data-toggle="tab">C#</a></li>
+    </ul>
+    <div class="tab-content">
+    <div class="tab-pane active" id="tab5">
+<pre class="prettyprint">
+&lt;?php
+$login = 'JaneDoe';
+$password = 'abc123';
+$client = new SoapClient("https://www.ebridgeservices.com/ePortalService.asmx?wsdl");
+$params = array(
+	'login' => $login,
+	'password'=> $password,
+	'status' => 'All',
+	'docType' => '850',
+	'fromDate' => '2011-03-28',
+	'toDate' => '2013-07-28'
+	);
+try {
+	$response = $client->GetDocumentList2($params);
+	}
+catch (Exception $e) {
+	echo 'Error: '.$e->getMessage();
+	}
+$xml = new SimpleXMLElement($response->GetDocumentList2Result);
+$docs = $xml->xpath("//@doc_sys_no");
+$params = array(
+	'login' => $login,
+	'password'=> $password
+	);
+foreach ($docs as $doc) {
+	$params['sys_no'] = (string) $doc;
+	try {
+		$response = $client->GetDocument($params);
+		}
+	catch (Exception $e) {
+		echo 'Error: '.$e->getMessage();
+		}
+	var_dump($response->GetDocumentResult);
+	}
+</pre>
+    </div>
+    <div class="tab-pane" id="tab6">
+<pre class="prettyprint">
+<!-- language: lang-csh -->//Web Reference (ePortalServiceReference) needs to be added to your project with url (https://www.ebridgeservices.com/ePortalService.asmx?wsdl)
+string username = "JaneDoe";
+string password = "abc123";
+string docType = "850";
+string partner = "";
+string fromDate = "2010-03-28";
+string toDate = "2013-07-28";
+ePortalServiceReference.ePortalService eportalService = new ePortalServiceReference.ePortalService();
+try
+{
+	string result = eportalService.GetDocumentList2(username, password, ePortalServiceReference.DocListStatus.All, docType, partner, fromDate, toDate);
+	if (!string.IsNullOrEmpty(result))
+	{
+		System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
+		xmlDoc.LoadXml(result);
+		System.Xml.XmlNode xml_doc_sys_list = xmlDoc.DocumentElement.ChildNodes[1];
+		if (xml_doc_sys_list != null)
+		{
+			List<int> doc_sys_list = new List<int>();
+			if (xml_doc_sys_list.Attributes["doc_sys_no"].Value != null)
+				doc_sys_list.Add(Convert.ToInt32(xml_doc_sys_list.Attributes["doc_sys_no"].Value));
+			foreach (System.Xml.XmlNode line in xml_doc_sys_list.ChildNodes)
+			{
+				if (line.Attributes["doc_sys_no"].Value != null)
+					doc_sys_list.Add(Convert.ToInt32(line.Attributes["doc_sys_no"].Value));
+			}
+			foreach (int doc_no in doc_sys_list)
+			{
+				string xmlDocument = eportalService.GetDocument(username, password, doc_no);
+			}
+		}
+	}
+}
+catch (Exception ex)
+{
+	System.Diagnostics.Trace.WriteLine(ex.Message);
+}
+</pre>
+
+    </div>
+    </div>
+    </div>
+        </section>
+           <section id="othermethods">
+          <div class="page-header">
+            <h2>Other Methods</h2>
+          </div>  
+        </section>
+        
+           <section id="getdocumenttype">
+            <h3>Get Document Type List</h3>
+            
+        <p>The <tt><a href="https://www.ebridgeservices.com/ePortalService.asmx?op=GetDocTypeList">GetDocTypeList()</a></tt> method allows you to retrieve a list of all document types used on eBridge ePortal. Below you can find the required parameters and sample scripts.</p>
+		
+		<table class="table table-bordered">
+<tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+<tr><td><tt>username</tt></td><td>string</td><td>ePortal username</td></tr>
+<tr><td><tt>password</tt></td><td>string</td><td>ePortal password</td></tr>
+</table>
+    <div class="tabbable">
+    <ul class="nav nav-tabs">
+    <li class="active"><a href="#tab9" data-toggle="tab">PHP</a></li>
+    <li><a href="#tab10" data-toggle="tab">C#</a></li>
+    </ul>
+    <div class="tab-content">
+    <div class="tab-pane active" id="tab9">
+<pre class="prettyprint">
+&lt;?php
+$client = new SoapClient("https://www.ebridgeservices.com/ePortalService.asmx?wsdl");
+$params = array(
+	'username'=>'JaneDoe',
+	'password'=>'abc123'
+	);
+try {
+	$response = $client->GetDocTypeList($params);
+	}
+catch (Exception $e) {
+	$response = 'Error: '.$e->getMessage();
+	}
+var_dump($response);
+</pre>
+    </div>
+    <div class="tab-pane" id="tab10">
+<pre class="prettyprint">
+<!-- language: lang-csh -->//Web Reference (ePortalServiceReference) needs to be added to your project with url (https://www.ebridgeservices.com/ePortalService.asmx?wsdl)
+string username = "JaneDoe";
+string password = "abc123";
+ePortalServiceReference.ePortalService eportalService = new ePortalServiceReference.ePortalService();
+try
+{
+	ePortalServiceReference.DocType[] docTypes = eportalService.GetDocTypeList(username, password);
+
+	if ((docTypes != null) && (docTypes.Length > 0))
+	{
+		string docTypeName = docTypes[0].name;
+	}
+}
+catch (Exception ex)
+{
+	System.Diagnostics.Trace.WriteLine(ex.Message);
+}
+</pre>
+    </div>
+    </div>
+    </div>
+        </section>
+                <section id="moreresources">
+          <div class="page-header">
+            <h2>More Resources</h2>
+          </div>  
+			<ul>
+			<li><a href="https://www.ebridgeservices.com/ePortalService.asmx?WSDL">WSDL</a></li>
+			<li><a href="Schemas/xcbl40/ordermanagement/v1_0/ordermanagement.xsd">ordermanagement.xsd</a> (for orders)</li>
+			<li><a href="Schemas/eBRIDGE/inventorymanagement2.xsd">inventorymanagement2.xsd</a> (for product and inventory data)</li>
+			<li><a href="http://www.ebridgeconnections.com/core/?t=5">Support Forums</a></li>
+			<li><a href="http://www.ebridgeconnections.com/support/log-a-case.html">Contact eBridge Connections Support</a></li>
+			<a href="http://www.ebridgeconnections.com/blueprint/?xpaths=1">Blueprint Builder With xCBL XPaths</a>
+			</ul>
+        </section>
+      </div>
+    </div>
+  </div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="bootstrap.min.js"></script>
+  </body>
+</html>
