@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	    xmlns="rrn:org.xcbl:schemas/xcbl/v4_0/catalog/v1_0/catalog.xsd"
+	    xmlns:inv="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd"
+	    xmlns:core="rrn:org.xcbl:schemas/xcbl/v4_0/core/core.xsd"
+	    targetNamespace="rrn:org.xcbl:schemas/xcbl/v4_0/catalog/v1_0/catalog.xsd" elementFormDefault="qualified">
+	    
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ActionType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/AttributeNameType.xsd"/>
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/AttributeValueType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/AttributeTypeType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/BuyerSupplierCodeType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/CatalogAudienceCodeType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/CatalogAudienceType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/CatalogContractType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/CatalogProviderType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/CatalogSchemaType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/CatalogSystemType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/CategoryAttributeType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/CategoryNameType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/DefaultLanguageType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ExternalItemRefType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/IsPublicAccountType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/IsReplacementType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/IsRequiredType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/LongDescriptionType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ManufacturerType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ObjectAttributeType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ParentCategoryRefListType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/PartnerRelationshipCodeType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/PartnerRelationshipType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/PartnerType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/PriceCatalogType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/PricingInformationType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/PricingType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ProductAttachmentType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ProductIDStandardCodeType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ProductIDStandardType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ProductIDType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ProductNameType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ProductPriceType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ProductType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ProductTypeCodedType.xsd"/>
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/RelatedProductType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ScalarTypeCodeType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/SchemaCategoryRefListType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/SchemaCategoryType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ShortDescriptionType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/SupplierAccountInformationType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/SupplierAccountType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/TargetTypeCodeType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/ValidateAttributesType.xsd" />
+  <xsd:include schemaLocation="../xcbl40/catalog/v1_0/VisibilityRulesType.xsd" />
+
+
+  <xsd:import schemaLocation="../xcbl40/materialsmanagement/v1_0/InventoryReportDetailType.xsd" namespace="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" />
+  <xsd:import schemaLocation="../xcbl40/materialsmanagement/v1_0/InventoryReportType.xsd" namespace="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" />
+  <xsd:import schemaLocation="../xcbl40/materialsmanagement/v1_0/InventoryManagementDetailType.xsd" namespace="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" />
+  <xsd:import schemaLocation="../xcbl40/materialsmanagement/v1_0/InventoryReportPartyType.xsd" namespace="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" />
+  <xsd:import schemaLocation="../xcbl40/materialsmanagement/v1_0/InventoryReportDatesType.xsd" namespace="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" />
+  <xsd:import schemaLocation="../xcbl40/materialsmanagement/v1_0/InventoryReportTypeCodeType.xsd" namespace="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" />
+  <xsd:import schemaLocation="../xcbl40/materialsmanagement/v1_0/InventoryReportTypeType.xsd" namespace="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" />
+  <xsd:import schemaLocation="../xcbl40/materialsmanagement/v1_0/InventoryItemIdentifiersType.xsd" namespace="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" />
+  <xsd:import schemaLocation="../xcbl40/materialsmanagement/v1_0/IDNumberRangesType.xsd" namespace="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" /> 
+  <xsd:import schemaLocation="../xcbl40/materialsmanagement/v1_0/IDNumbersType.xsd" namespace="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" /> 
+  <xsd:import schemaLocation="../xcbl40/materialsmanagement/v1_0/InventoryReportHeaderType.xsd" namespace="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" />
+  <xsd:import schemaLocation="../xcbl40/materialsmanagement/v1_0/InventoryReportSummaryType.xsd" namespace="rrn:org.xcbl:schemas/xcbl/v4_0/materialsmanagement/v1_0/materialsmanagement.xsd" />
+
+    <xsd:annotation>
+        <xsd:documentation xml:lang="en">
+            XML Common Business Library 4.0
+            Copyright 2002 Commerce One, Inc.
+            Permission is granted to use, copy, modify and distribute the
+            DTD's, schemas and modules in the Commerce One XML Common Business
+            Library Version 4.0 subject to the terms and conditions specified
+            at http://www.xcbl.org/license.html
+        </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType name="CatalogDataType2">
+        <xsd:annotation>
+            <xsd:documentation>is a container for instances of products and pricings described in the
+        <!--code-->ProductCatalog<!--/code-->.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+		<xsd:element name="Product" type="ProductType">
+		    <xsd:annotation>
+                        <xsd:documentation>contains all attributes associated with a product.</xsd:documentation>
+                    </xsd:annotation>
+		</xsd:element>
+		<xsd:element name="Pricing" type="PricingType">
+			<xsd:annotation>
+                        <xsd:documentation>contains all prices associated with a particular product from a particular price catalog.</xsd:documentation>
+                    </xsd:annotation>
+		</xsd:element>
+           </xsd:choice>
+	   <xsd:element minOccurs="0" maxOccurs="unbounded" name="InventoryReportDetail" type="inv:InventoryReportDetailType" />
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

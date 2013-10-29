@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	    xmlns="http://ebridgesoft.com/schemas/DocumentRequest.xsd"
+	    targetNamespace="http://ebridgesoft.com/schemas/DocumentRequest.xsd"
+	    elementFormDefault="qualified">
+
+    <xsd:complexType name="DocumentRequestType">
+        <xsd:annotation>
+            <xsd:documentation>requests specified document from an accounting database.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+	    <xsd:element name="EntityName" type="xsd:string">
+                <xsd:annotation>
+            		<xsd:documentation>entity name. For example: 'Order', 'Invoice', etc.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+	    <xsd:element name="KeyField" type="KeyFieldType" maxOccurs="unbounded">
+                <xsd:annotation>
+            		<xsd:documentation>key fields that uniquely identify one document in the application database. </xsd:documentation>
+            		<xsd:documentation> Sender is responsible to form the request that will result in one only document.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="KeyFieldType">
+        <xsd:sequence>
+	    <xsd:element name="KeyName" type="SimpleTypeType">
+                <xsd:annotation>
+            		<xsd:documentation>the name of the key field</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+	    <xsd:element name="KeyValue" type="xsd:string">
+                <xsd:annotation>
+            		<xsd:documentation>the value of the key field to look for</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="SimpleTypeType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+	<!-- Document Root Element Declarations -->
+	<xsd:element name="DocumentRequest" type="DocumentRequestType" />
+
+</xsd:schema>

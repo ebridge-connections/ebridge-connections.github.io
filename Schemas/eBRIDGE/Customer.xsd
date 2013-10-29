@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	    xmlns:core="rrn:org.xcbl:schemas/xcbl/v4_0/core/core.xsd"
+	    xmlns="rrn:org.xcbl:schemas/xcbl/v4_0/CustomerParty/v1_0/Customer.xsd"
+	    targetNamespace="rrn:org.xcbl:schemas/xcbl/v4_0/CustomerParty/v1_0/Customer.xsd"
+	    elementFormDefault="qualified">
+	    
+	<xsd:import namespace="rrn:org.xcbl:schemas/xcbl/v4_0/core/core.xsd" schemaLocation="../xcbl40/core/core.xsd" />
+
+	<!-- Document Root Element Declarations -->
+	<xsd:element name="Customer" type="core:PartyType"/>
+</xsd:schema>

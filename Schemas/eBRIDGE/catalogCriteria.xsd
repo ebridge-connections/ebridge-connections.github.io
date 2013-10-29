@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	    xmlns="http://ebridgesoft.com/schemas/catalogCriteria.xsd"
+	    targetNamespace="http://ebridgesoft.com/schemas/catalogCriteria.xsd"
+	    elementFormDefault="qualified">
+	    
+    <xsd:complexType name="CRITERIAType">
+        <xsd:sequence>
+	    <xsd:element name="DOC" type="CriteriaRangeType">
+                <xsd:annotation>
+                   <xsd:documentation>document IDs range to look for</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+	    <xsd:element name="PARTNER" type="CriteriaRangeType" minOccurs="0">
+                <xsd:annotation>
+                   <xsd:documentation>document owner IDs range to look for</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+	    <xsd:element name="DATE" type="CriteriaRangeType" minOccurs="0">
+                <xsd:annotation>
+                   <xsd:documentation>specific date range of the required documents the type of the document dates is specified in the TYPE attribute</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+	    <xsd:element name="CriteriaCodedOther" type="CriteriaRangeType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                   <xsd:documentation>any custom range values</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        
+	 <xsd:attribute name="DOCID" type="xsd:string" use="required">
+                <xsd:annotation>
+                   <xsd:documentation>entity name. For example: 'Order', 'Invoice', etc.</xsd:documentation>
+                </xsd:annotation>
+         </xsd:attribute>
+	 <xsd:attribute name="RETRIEVE_LIMIT" type="xsd:int" use="optional" default="0">
+                <xsd:annotation>
+                   <xsd:documentation>requested limit of the result set</xsd:documentation>
+                </xsd:annotation>
+         </xsd:attribute>
+	 <xsd:attribute name="TYPE" type="DocumentRequestResultType" use="optional" default="STANDARD">
+                <xsd:annotation>
+                   <xsd:documentation>enumerated value of the expected result. Allowed values are 'STANDARD' and 'ASN'</xsd:documentation>
+                </xsd:annotation>
+         </xsd:attribute>
+	 <xsd:attribute name="BRIDGEFLAG" type="xsd:int" use="optional" default="0">
+                <xsd:annotation>
+                   <xsd:documentation></xsd:documentation>
+                </xsd:annotation>
+         </xsd:attribute>
+	 <xsd:attribute name="NEWFLAG" type="xsd:int" use="optional" default="0">
+                <xsd:annotation>
+                   <xsd:documentation>optional flag to browse for all available documents or new ones since the last request</xsd:documentation>
+                </xsd:annotation>
+         </xsd:attribute>
+    </xsd:complexType>
+	    
+    <xsd:complexType name="CriteriaRangeType">
+	    <xsd:attribute name="FROM" type="xsd:string" use="optional" default="(All)">
+                <xsd:annotation>
+                   <xsd:documentation></xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+	    <xsd:attribute name="TO" type="xsd:string" use="optional" default="(All)">
+                <xsd:annotation>
+                   <xsd:documentation></xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+	    <xsd:attribute name="TYPE" type="xsd:string" use="optional">
+                <xsd:annotation>
+                   <xsd:documentation></xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+    </xsd:complexType>
+    <xsd:simpleType name="DocumentRequestResultType">
+          <xsd:restriction base="xsd:NMTOKEN">
+            <xsd:enumeration value="STANDARD">
+            </xsd:enumeration>
+            <xsd:enumeration value="ASN">
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+  
+    
+	<!-- Document Root Element Declarations -->
+	<xsd:element name="DocumentListRequest" type="CRITERIAType">
+	   <xsd:annotation>
+               <xsd:documentation>gives a set of criteria to browse and retrieve documents from an accounting database.</xsd:documentation>
+	   </xsd:annotation>
+	</xsd:element>  
+</xsd:schema>

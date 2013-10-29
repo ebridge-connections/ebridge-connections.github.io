@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	    xmlns="http://ebridgesoft.com/schemas/DocumentListResponse.xsd"
+	    targetNamespace="http://ebridgesoft.com/schemas/DocumentListResponse.xsd"
+	    elementFormDefault="qualified">
+
+    <xsd:complexType name="DocumentListResponseType">
+        <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+	    <xsd:element name="Document" type = "DocumentType" maxOccurs="unbounded">
+                <xsd:annotation>
+            		<xsd:documentation>result set in response to the previously sent DocumentListRequest</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="FieldType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+		<xsd:attribute name="name" use="required">
+		   <xsd:annotation>
+            		<xsd:documentation>user-friendly name of the field</xsd:documentation>
+		   </xsd:annotation>
+		</xsd:attribute>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="DocumentType">
+        <xsd:sequence>
+	   <xsd:element name="Field" type="FieldType" maxOccurs="unbounded">
+                <xsd:annotation>
+            		<xsd:documentation>a field from the database tables</xsd:documentation>
+                </xsd:annotation>
+	   </xsd:element>
+        </xsd:sequence>
+	<xsd:attribute name="entityName" type="xsd:string" use="required">
+                <xsd:annotation>
+            		<xsd:documentation>entity name. For example: 'Order', 'Invoice', etc.</xsd:documentation>
+                </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+	<!-- Document Root Element Declarations -->
+	<xsd:element name="DocumentListResponse" type="DocumentListResponseType">
+                <xsd:annotation>
+            		<xsd:documentation></xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+</xsd:schema>
