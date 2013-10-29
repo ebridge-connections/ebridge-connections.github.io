@@ -206,27 +206,27 @@ catch (Exception $e) {
     $response = 'Error: '.$e->getMessage();
     }
 var_dump($response);</pre></div><div class="tab-pane" id="tab4"><pre class="prettyprint"><!-- language: lang-csh -->//Web Reference (ePortalServiceReference) needs to be added to your project with url (https://www.ebridgeservices.com/ePortalService.asmx?wsdl)
-string username = "JaneDoe";
-string password = "abc123";
-string content = "";
-string filename = "123.xml";
-using (System.IO.StreamReader streamReader = new System.IO.StreamReader("example.xml"))
-{
-	content = streamReader.ReadToEnd();
-}
-ePortalServiceReference.ePortalService eportalService = new ePortalServiceReference.ePortalService();
-try
-{
-	bool result = eportalService.SendFile(username, password, content, filename);
-	if (result)
-	{
-		System.Diagnostics.Trace.WriteLine("File has been sent successfully.");
-	}
-}
-catch (Exception ex)
-{
-	System.Diagnostics.Trace.WriteLine(ex.Message);
-}</pre></div></div></div></section><section id="sendingorders"><h3>Orders</h3>
+            string username = "JaneDoe";
+            string password = "abc123";
+            string content = "";
+            string filename = "123.xml";
+            using (System.IO.StreamReader streamReader = new System.IO.StreamReader("example.xml"))
+            {
+                content = streamReader.ReadToEnd();
+            }
+            ePortalServiceReference.ePortalService eportalService = new ePortalServiceReference.ePortalService();
+            try
+            {
+                bool result = eportalService.SendFile(username, password, content, filename);
+                if (result)
+                {
+                    System.Diagnostics.Trace.WriteLine("File has been sent successfully.");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine(ex.Message);
+            }</pre></div></div></div></section><section id="sendingorders"><h3>Orders</h3>
 <p>Orders can be sent to ePortal using <tt>SendFile()</tt>. The <tt>content</tt> parameter of <tt>SendFile()</tt> should be an XML document structured according to the <a href="Schemas/xcbl40/ordermanagement/v1_0/ordermanagement.xsd">Order Management XSD</a> of the <a href="http://www.xcbl.org/xcbl40/xcbl40.shtml">xCBL 4.0 standard</a> with <tt>&lt;Order></tt> as the root node.</p>
 
 <p>The fields required for a sales order can vary depending on the application that the order will be integrated with. You can see the sales order fields for your application/ERP and identify their corresponding XML elements using the <em>Data Elements</em> link from <a href="http://www.ebridgeconnections.com/blueprint/?xpaths=1">eBridge's XPath blueprint builder</a>.
@@ -709,42 +709,96 @@ foreach ($docs as $doc) {
     <div class="tab-pane" id="tab6">
 <pre class="prettyprint">
 <!-- language: lang-csh -->//Web Reference (ePortalServiceReference) needs to be added to your project with url (https://www.ebridgeservices.com/ePortalService.asmx?wsdl)
-string username = "JaneDoe";
-string password = "abc123";
-string docType = "850";
-string partner = "";
-string fromDate = "2010-03-28";
-string toDate = "2013-07-28";
-ePortalServiceReference.ePortalService eportalService = new ePortalServiceReference.ePortalService();
-try
-{
-	string result = eportalService.GetDocumentList2(username, password, ePortalServiceReference.DocListStatus.All, docType, partner, fromDate, toDate);
-	if (!string.IsNullOrEmpty(result))
-	{
-		System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
-		xmlDoc.LoadXml(result);
-		System.Xml.XmlNode xml_doc_sys_list = xmlDoc.DocumentElement.ChildNodes[1];
-		if (xml_doc_sys_list != null)
-		{
-			List<int> doc_sys_list = new List<int>();
-			if (xml_doc_sys_list.Attributes["doc_sys_no"].Value != null)
-				doc_sys_list.Add(Convert.ToInt32(xml_doc_sys_list.Attributes["doc_sys_no"].Value));
-			foreach (System.Xml.XmlNode line in xml_doc_sys_list.ChildNodes)
-			{
-				if (line.Attributes["doc_sys_no"].Value != null)
-					doc_sys_list.Add(Convert.ToInt32(line.Attributes["doc_sys_no"].Value));
-			}
-			foreach (int doc_no in doc_sys_list)
-			{
-				string xmlDocument = eportalService.GetDocument(username, password, doc_no);
-			}
-		}
-	}
-}
-catch (Exception ex)
-{
-	System.Diagnostics.Trace.WriteLine(ex.Message);
-}
+
+            string username = "JaneDoe";
+
+            string password = "abc123";
+
+            string docType = "850";
+
+            string partner = "";
+
+            string fromDate = "2010-03-28";
+
+            string toDate = "2013-07-28";
+
+            ePortalServiceReference.ePortalService eportalService = new ePortalServiceReference.ePortalService();
+
+ 
+
+            try
+
+            {
+
+                string result = eportalService.GetDocumentList2(username, password, ePortalServiceReference.DocListStatus.All, docType, partner, fromDate, toDate);
+
+ 
+
+                if (!string.IsNullOrEmpty(result))
+
+                {
+
+                    System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
+
+                    xmlDoc.LoadXml(result);
+
+ 
+
+                    System.Xml.XmlNode xml_doc_sys_list = xmlDoc.DocumentElement.ChildNodes[1];
+
+ 
+
+                    if (xml_doc_sys_list != null)
+
+                    {
+
+                        List&lt;int> doc_sys_list = new List&lt;int>();
+
+ 
+
+                        if (xml_doc_sys_list.Attributes["doc_sys_no"].Value != null)
+
+                            doc_sys_list.Add(Convert.ToInt32(xml_doc_sys_list.Attributes["doc_sys_no"].Value));
+
+ 
+
+                        foreach (System.Xml.XmlNode line in xml_doc_sys_list.ChildNodes)
+
+                        {
+
+                            if (line.Attributes["doc_sys_no"].Value != null)
+
+                                doc_sys_list.Add(Convert.ToInt32(line.Attributes["doc_sys_no"].Value));
+
+                        }
+
+ 
+
+                        foreach (int doc_no in doc_sys_list)
+
+                        {
+
+                            string xmlDocument = eportalService.GetDocument(username, password, doc_no);
+
+                        }
+
+ 
+
+                    }
+
+ 
+
+                }
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                System.Diagnostics.Trace.WriteLine(ex.Message);
+
+            }
 </pre>
 
     </div>
@@ -770,7 +824,6 @@ catch (Exception ex)
     <div class="tabbable">
     <ul class="nav nav-tabs">
     <li class="active"><a href="#tab9" data-toggle="tab">PHP</a></li>
-    <li><a href="#tab10" data-toggle="tab">C#</a></li>
     </ul>
     <div class="tab-content">
     <div class="tab-pane active" id="tab9">
@@ -788,27 +841,6 @@ catch (Exception $e) {
 	$response = 'Error: '.$e->getMessage();
 	}
 var_dump($response);
-</pre>
-    </div>
-    <div class="tab-pane" id="tab10">
-<pre class="prettyprint">
-<!-- language: lang-csh -->//Web Reference (ePortalServiceReference) needs to be added to your project with url (https://www.ebridgeservices.com/ePortalService.asmx?wsdl)
-string username = "JaneDoe";
-string password = "abc123";
-ePortalServiceReference.ePortalService eportalService = new ePortalServiceReference.ePortalService();
-try
-{
-	ePortalServiceReference.DocType[] docTypes = eportalService.GetDocTypeList(username, password);
-
-	if ((docTypes != null) && (docTypes.Length > 0))
-	{
-		string docTypeName = docTypes[0].name;
-	}
-}
-catch (Exception ex)
-{
-	System.Diagnostics.Trace.WriteLine(ex.Message);
-}
 </pre>
     </div>
     </div>
